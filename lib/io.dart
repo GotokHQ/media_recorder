@@ -1,16 +1,71 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' show MultiPartyRecorder;
+import 'package:flutter_webrtc/flutter_webrtc.dart'
+    show MultiPartyRecorder, MediaRecorder, MediaStream;
 import 'package:image_picker/image_picker.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'interface.dart' as _interface;
 
 class MediaRecorderHelper extends _interface.IMediaRecorderHelper {
+  MediaRecorder? _recorder;
+  late String _path;
+  @override
+  bool get isMediaRecordingSupported => true;
+  @override
+  MediaRecorder? get recorder => _recorder;
+  @override
+  String get mimeType => 'video/mp4';
+
+  @override
+  Future<void> startVideoRecordingWithMediaRecorder(MediaStream mediaStream,
+      {bool mirror = true}) async {
+    final Directory extDir = await getTemporaryDirectory();
+    final String dirPath = '${extDir.path}/gotok/recordings';
+    await Directory(dirPath).create(recursive: true);
+    final String filePath = '$dirPath/1min.mp4';
+    final file = File(filePath);
+    final bool exists = await file.exists();
+    if (exists) {
+      await file.delete();
+    }
+    try {
+      _recorder?.stop();
+      _recorder = MediaRecorder();
+      _path = filePath;
+      _recorder!.start(
+        _path,
+        videoTrack: mediaStream.getVideoTracks().first,
+      );
+    } catch (e) {
+      print(e);
+      _recorder?.stop();
+      _recorder = null;
+      throw _interface.MediaRecorderError(message: e.toString());
+    }
+  }
+
+  @override
+  Future<PickedFile> stopVideoRecordingWithMediaRecorder() async {
+    try {
+      await _recorder?.stop();
+      _recorder = null;
+      return PickedFile(_path);
+    } catch (e) {
+      return throw _interface.MediaRecorderError(message: e.toString());
+    } finally {
+      _recorder?.stop();
+      _recorder = null;
+    }
+  }
+}
+
+class MultipartyRecorderHelper
+    extends _interface.IMultipartyMediaRecorderHelper {
   @override
   final MultiPartyRecorder recorder;
 
-  MediaRecorderHelper(this.recorder);
+  MultipartyRecorderHelper(this.recorder);
 
   late String _path;
   @override

@@ -10,10 +10,19 @@ class MediaRecorderError implements Exception {
   MediaRecorderError({this.code, this.message});
 }
 
-abstract class IMediaRecorderHelper {
+abstract class IMultipartyMediaRecorderHelper {
   MultiPartyRecorder? get recorder;
   bool get isMediaRecordingSupported;
   String? get mimeType;
   Future<void> startRecorder();
   Future<PickedFile> stopRecorder();
+}
+
+abstract class IMediaRecorderHelper {
+  MediaRecorder? get recorder;
+  bool get isMediaRecordingSupported;
+  String? get mimeType;
+  Future<void> startVideoRecordingWithMediaRecorder(MediaStream mediaStream,
+      {bool mirror = true});
+  Future<PickedFile> stopVideoRecordingWithMediaRecorder();
 }
