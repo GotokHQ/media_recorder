@@ -18,7 +18,7 @@ class MediaRecorderHelper extends _interface.IMediaRecorderHelper {
   }
 
   @override
-  Future<PickedFile> stopVideoRecordingWithMediaRecorder() async {
+  Future<XFile> stopVideoRecordingWithMediaRecorder() async {
     throw UnimplementedError();
   }
 }
@@ -39,7 +39,7 @@ class MultipartyRecorderHelper
   }
 
   @override
-  Future<PickedFile> stopRecorder() async {
+  Future<XFile> stopRecorder() async {
     throw UnimplementedError();
   }
 }

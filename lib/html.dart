@@ -67,26 +67,24 @@ class MediaRecorderHelper extends _interface.IMediaRecorderHelper {
   }
 
   @override
-  Future<PickedFile> stopVideoRecordingWithMediaRecorder() async {
+  Future<XFile> stopVideoRecordingWithMediaRecorder() async {
     try {
       await _recorder?.stop();
       final html.Blob blob =
           await _completer?.future ?? Future.value() as html.Blob;
       _recorder = null;
       if (_mimeType!.startsWith("video/webm")) {
-        Completer<PickedFile> completer = Completer();
+        Completer<XFile> completer = Completer();
         getSeekableBlob(blob, allowInterop((html.Blob blob) {
           completer.complete(
-            PickedFile(
-              html.Url.createObjectUrlFromBlob(blob),
-            ),
+            XFile(html.Url.createObjectUrlFromBlob(blob),
+                mimeType: "video/webm"),
           );
         }));
         return completer.future;
       } else {
-        return PickedFile(
-          html.Url.createObjectUrlFromBlob(blob),
-        );
+        return XFile(html.Url.createObjectUrlFromBlob(blob),
+            mimeType: "video/mp4");
       }
     } catch (e) {
       return throw _interface.MediaRecorderError(message: e.toString());
@@ -153,25 +151,23 @@ class MultipartyRecorderHelper
   }
 
   @override
-  Future<PickedFile> stopRecorder() async {
+  Future<XFile> stopRecorder() async {
     try {
       await recorder.stop();
       final html.Blob blob =
           await _completer?.future ?? Future.value() as html.Blob;
       if (_mimeType!.startsWith("video/webm")) {
-        Completer<PickedFile> completer = Completer();
+        Completer<XFile> completer = Completer();
         getSeekableBlob(blob, allowInterop((html.Blob blob) {
           completer.complete(
-            PickedFile(
-              html.Url.createObjectUrlFromBlob(blob),
-            ),
+            XFile(html.Url.createObjectUrlFromBlob(blob),
+                mimeType: "video/mp4"),
           );
         }));
         return completer.future;
       } else {
-        return PickedFile(
-          html.Url.createObjectUrlFromBlob(blob),
-        );
+        return XFile(html.Url.createObjectUrlFromBlob(blob),
+            mimeType: "video/mp4");
       }
     } catch (e) {
       return throw _interface.MediaRecorderError(message: e.toString());

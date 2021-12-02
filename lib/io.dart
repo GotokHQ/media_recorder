@@ -38,7 +38,6 @@ class MediaRecorderHelper extends _interface.IMediaRecorderHelper {
         videoTrack: mediaStream.getVideoTracks().first,
       );
     } catch (e) {
-      print(e);
       _recorder?.stop();
       _recorder = null;
       throw _interface.MediaRecorderError(message: e.toString());
@@ -46,11 +45,11 @@ class MediaRecorderHelper extends _interface.IMediaRecorderHelper {
   }
 
   @override
-  Future<PickedFile> stopVideoRecordingWithMediaRecorder() async {
+  Future<XFile> stopVideoRecordingWithMediaRecorder() async {
     try {
       await _recorder?.stop();
       _recorder = null;
-      return PickedFile(_path);
+      return XFile(_path, mimeType: 'video/mp4');
     } catch (e) {
       return throw _interface.MediaRecorderError(message: e.toString());
     } finally {
@@ -106,17 +105,16 @@ class MultipartyRecorderHelper
     try {
       await recorder.start(_path);
     } catch (e) {
-      print(e);
       recorder.stop();
       throw _interface.MediaRecorderError(message: e.toString());
     }
   }
 
   @override
-  Future<PickedFile> stopRecorder() async {
+  Future<XFile> stopRecorder() async {
     try {
       await recorder.stop();
-      return PickedFile(_path);
+      return XFile(_path, mimeType: mimeType);
     } catch (e) {
       return throw _interface.MediaRecorderError(message: e.toString());
     } finally {

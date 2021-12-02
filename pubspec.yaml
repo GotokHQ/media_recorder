@@ -18,7 +18,7 @@ dependencies:
     git:
       url: https://github.com/KurobiHq/browser_adapter.git
   js: ^0.6.3
-  image_picker: ^0.8.4+2
+  image_picker: ^0.8.4+4
   universal_platform: ^1.0.0+1
   
 dev_dependencies:
